@@ -1,0 +1,75 @@
+<project default="execute">
+
+    <property name="proj.name" value="ec2-rundeck-node-generator"/>
+    <property name="proj.vers" value="0.1"/>
+    <property name="target.dir" value="${basedir}/target"/>
+
+    <!-- all third-party libs -->
+    <fileset dir="third-party" id="thirdpartylibs">
+        <include name="aws-java-sdk-1.0.12/*.jar"/>
+        <include name="commons-beanutils-1.7.0/*.jar"/>
+        <include name="commons-codec-1.3/*.jar"/>
+        <include name="commons-httpclient-3.0.1/*.jar"/>
+        <include name="commons-logging-1.1.1/*.jar"/>
+        <include name="dom4j-1.6.1/*.jar"/>
+        <include name="jackson-1.4/*.jar"/>
+        <include name="log4j-1.2.15/*.jar"/>
+        <include name="stax-api-1.0.1/*.jar"/>
+        <include name="stax-ri-1.2.0/*.jar"/>
+    </fileset>
+    <union id="libs">
+        <fileset refid="thirdpartylibs"/>
+        <fileset dir="${basedir}/lib" includes="*.jar"/>
+    </union>
+
+    <target name="execute" depends="jar">
+        <echo>Build complete</echo>
+    </target>
+
+    <target name="jar" depends="compile,gen-jar-classpath">
+        <mkdir dir="${target.dir}/dist"/>
+        <jar basedir="${target.dir}/classes" destfile="${target.dir}/dist/${proj.name}-${proj.vers}.jar">
+            <manifest>
+                <attribute name="Main-Class" value="com.dtolabs.rundeck.ec2.NodeGenerator"/>
+                <attribute name="Class-Path" value="${jar.classpath}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="copylibs">
+        <!-- copy third-party and lib/*.jar into target/lib/ -->
+        <mkdir dir="${target.dir}/dist/lib"/>
+        <copy todir="${target.dir}/dist/lib">
+            <mappedresources>
+                <flattenmapper/>
+                <union refid="libs"/>
+            </mappedresources>
+        </copy>
+    </target>
+
+    <target name="compile" depends="copylibs">
+        
+        <mkdir dir="${target.dir}/classes"/>
+        <javac source="1.5" target="1.5" srcdir="${basedir}/src/main/java" includes="**/*.java"
+               destdir="${target.dir}/classes" includeantruntime="false">
+
+            <classpath id="classpath">
+                <!-- define classpath ref for use by gen-jar-classpath, relative to target jar file -->
+                <fileset dir="${target.dir}/dist/lib" includes="*.jar"/>
+            </classpath>
+
+        </javac>
+    </target>
+
+    <target name="gen-jar-classpath">
+        <!-- create manifest class-path value.  jars should be in lib/*.jar relative to
+        the target jar -->
+        <manifestclasspath property="jar.classpath" jarfile="${target.dir}/dist/${proj.name}-${proj.vers}.jar">
+            <classpath refid="classpath" />
+        </manifestclasspath>
+    </target>
+
+    <target name="clean">
+        <delete dir="${target.dir}"/>
+    </target>
+</project>

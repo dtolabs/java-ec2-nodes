@@ -1,0 +1,54 @@
+apply plugin: 'java'
+sourceCompatibility = 1.5
+version = '0.1'
+defaultTasks 'clean', 'build'
+targetdir="$projectDir/target"
+buildDir="target"
+libsDirName="dist"
+repositories {
+    mavenCentral()
+    flatDir name: 'localRepository', dirs: 'lib'
+    
+    add(new org.apache.ivy.plugins.resolver.FileSystemResolver()) {
+        name = 'thirdparty'
+        addArtifactPattern "$projectDir/third-party/[module]-[revision]/[module]-[revision](-[classifier]).[ext]"
+        descriptor = 'optional'
+        checkmodified = true
+    }
+}
+dependencies {
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.7.0'
+    compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.0.1'
+    compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
+    compile group: 'apache-log4j', name: 'apache-log4j', version: '1.2.15'
+    compile group: 'jackson-core-asl', name: 'jackson-core-asl', version: '1.4.3'
+    compile group: 'stax', name: 'stax', version: '1.2.0'
+    compile group: 'stax-api', name: 'stax-api', version: '1.0.1'
+    compile group: 'aws-java-sdk', name: 'aws-java-sdk', version: '1.0.12'
+    
+    compile group: 'rundeck-core', name: 'rundeck-core', version: '1.0.0'
+}
+
+jar {
+    manifest {
+        attributes 'Class-Path': configurations.runtime.collect { "lib/$it.name" }.join(" ") ,'Main-Class': 'com.dtolabs.rundeck.ec2.NodeGenerator'
+    }
+}
+task copyLibs << {
+    ant.mkdir(dir:"${libsDir}/lib")
+    configurations.runtime.each{
+        file=it
+        copy{
+            from file.absolutePath
+            into "${libsDir}/lib"
+        }
+        
+    }
+}
+
+jar.dependsOn copyLibs
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '0.9-rc-1'
+    jarPath = 'wrapper'
+}
