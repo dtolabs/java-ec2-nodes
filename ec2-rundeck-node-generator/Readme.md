@@ -13,7 +13,7 @@ Using included Gradle wrapper:
     
 Produces: target/dist/ec2-rundeck-node-generator-0.1.jar
 
-You can then execute the jar in-place as shown below, or you can relocate the entire "dist directory.
+You can then execute the jar in-place as shown below, or you can relocate the entire "dist" directory.
 
 Usage
 --------

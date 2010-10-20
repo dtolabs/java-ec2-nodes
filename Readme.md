@@ -20,9 +20,7 @@ Using included Gradle wrapper:
     
 Produces: target/dist/ec2-rundeck-node-generator-0.1.jar
 
-You can then execute the jar in-place as shown below, or you can relocate the entire "dist directory.
-
-See the ec2-rundeck-node-generator/Readme.md for information on usage.
+See the ec2-rundeck-node-generator/Readme.md file for information on usage.
 
 Using the CGI
 ----------
