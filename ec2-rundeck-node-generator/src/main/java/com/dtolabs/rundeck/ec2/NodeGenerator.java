@@ -89,7 +89,10 @@ public class NodeGenerator {
         }
 
         for (final Instance inst : instances) {
-            gen.addNode(instanceToNode(inst, mapping));
+            final INodeEntry iNodeEntry = instanceToNode(inst, mapping);
+            if(null!=iNodeEntry){
+                gen.addNode(iNodeEntry);
+            }
         }
         gen.generate();
         //
@@ -99,10 +102,17 @@ public class NodeGenerator {
     }
 
     public static INodeEntry instanceToNode(final Instance inst, final Properties mapping) throws GeneratorException {
+        String hostSel = mapping.getProperty("hostname.selector");
+        String host = applySelector(inst, hostSel, mapping.getProperty("hostname.default"));
+        if(null==host) {
+            System.err.println("Unable to determine hostname for instance: " + inst.getInstanceId());
+            return null;
+        }
         String nameSel = mapping.getProperty("name.selector");
         String name = applySelector(inst, nameSel, mapping.getProperty("name.default"));
-        String hostSel = mapping.getProperty("hostname.selector");
-        String host = applySelector(inst, nameSel, mapping.getProperty("hostname.default"));
+        if(null==name){
+            name=host;
+        }
         NodeEntryImpl node = new NodeEntryImpl(host, name);
         node.setType("Node");
         String descSel = mapping.getProperty("description.selector");
@@ -118,6 +128,17 @@ public class NodeGenerator {
                 } catch (Exception e) {
                     throw new GeneratorException(e);
                 }
+            }
+        }
+        String[] attrProps = new String[]{ResourceXMLConstants.NODE_REMOTE_URL, ResourceXMLConstants.NODE_EDIT_URL};
+        for (final String attrProp : attrProps) {
+            final String value = applySelector(inst, mapping.getProperty(attrProp + ".selector"),
+                mapping.getProperty(attrProp + ".default"));
+            if (null != value) {
+                if(null==node.getAttributes()) {
+                    node.setAttributes(new HashMap<String, String>());
+                }
+                node.getAttributes().put(attrProp, value);
             }
         }
 
@@ -150,7 +171,72 @@ public class NodeGenerator {
                 node.getSettings().put(name + "-" + tag.getKey(), tag.getValue());
             }
         }
+        if(null!=mapping.getProperty("tags.selector")){
+            final String selector = mapping.getProperty("tags.selector");
+            final String value = applySelector(inst, selector, mapping.getProperty("tags.default"));
+            if(null!=value){
+                final String[] values = value.split(",");
+                final HashSet<String> tagset = new HashSet<String>();
+                for (final String s : values) {
+                    tagset.add(s.trim());
+                }
+                if (null == node.getTags()) {
+                    node.setTags(tagset);
+                }else {
+                    node.getTags().addAll(tagset);
+                }
+            }
+        }
 
+        //apply specific tag selectors
+        Pattern tagPat = Pattern.compile("^tag\\.(.+?)\\.selector$");
+        //evaluate tag selectors
+        for (final Object o : mapping.keySet()) {
+            String key = (String) o;
+            String selector = mapping.getProperty(key);
+            //split selector by = if present
+            String[] selparts = selector.split("=");
+            Matcher m = tagPat.matcher(key);
+            if (m.matches()) {
+                String tagName = m.group(1);
+                if (null == node.getSettings()) {
+                    node.setSettings(new HashMap<String, String>());
+                }
+                final String value = applySelector(inst, selparts[0], null);
+                if (null != value) {
+                    if (selparts.length > 1 && !value.equals(selparts[1])) {
+                        continue;
+                    }
+                    //use add the tag if the value is not null
+                    if (null == node.getTags()) {
+                        node.setTags(new HashSet());
+                    }
+                    node.getTags().add(tagName);
+                }
+            }
+        }
+
+        //apply attribute selectors
+
+        Pattern attribPat = Pattern.compile("^attribute\\.(.+?)\\.selector$");
+        //evaluate setting selectors
+        for (final Object o : mapping.keySet()) {
+            String key = (String) o;
+            String selector = mapping.getProperty(key);
+            Matcher m = attribPat.matcher(key);
+            if (m.matches()) {
+                String attrName = m.group(1);
+                if (null == node.getAttributes()) {
+                    node.setAttributes(new HashMap<String, String>());
+                }
+                final String value = applySelector(inst, selector, mapping.getProperty(
+                    "attribute." + attrName + ".default"));
+                if (null != value) {
+                    //use nodename-settingname to make the setting unique to the node
+                    node.getAttributes().put(attrName, value);
+                }
+            }
+        }
         return node;
     }
 

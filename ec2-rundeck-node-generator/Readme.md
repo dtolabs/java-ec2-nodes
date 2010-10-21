@@ -51,7 +51,10 @@ Rundeck nodes have the following metadata fields:
 
 In addition, Nodes can have "Setting" values.  A Setting is a named entity with a string value.  Since Settings can be shared between Nodes, specific Settings must be named uniquely for each Node.  When defined, the name for each Setting will be made unique by prepending the name of the associated Node.
 
-EC2 Instances have a set of metadata that can be mapped to any of the Rundeck node fields, or to Settings for the node.
+EC2 Instance Field Selectors
+-----------------
+
+EC2 Instances have a set of metadata that can be mapped to any of the Rundeck node fields, or to Settings or tags for the node.
 
 EC2 fields:
 
@@ -88,7 +91,19 @@ EC2 Instances can also have "Tags" which are key/value pairs attached to the Ins
 Defining the mapping
 ---------------
 
-Define the mapping in a .properties formatted file.  The mapping consists of defining either a selector or a default for the desired Node fields.  The "name" and "hostname" fields are required.
+Define the mapping in a .properties formatted file.  The mapping consists of defining either a selector or a default for
+the desired Node fields.  The "name" and "hostname" fields are required.
+
+For purposes of this mapping file, a `field selector` is either:
+
+* An EC2 fieldname, or dot-separated field names
+* "tags/" followed by a Tag name, e.g. "tags/My Tag"
+* "tags/*" for use by the `settings.selector` mapping
+
+Selectors use the Apache [BeanUtils](http://commons.apache.org/beanutils/) to extract a property value from the AWS API
+[Instance class](http://docs.amazonwebservices.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/ec2/model/Instance.html).
+This means you can use dot-separated fieldnames to traverse the object graph.
+E.g. "state.name" to specify the "name" field of the State property of the Instance.
 
 format:
 
@@ -102,6 +117,20 @@ format:
     setting.<name>.default=<default value>
     # Special settings selector to map all Tags to Settings
     settings.selector=tags/*
-    
-Selector ~ this is either an EC2 field name selector, or to specify a tag: "tags/<name>".  Selectors use the Apache [BeanUtils](http://commons.apache.org/beanutils/) to extract a property value from the AWS API [Instance class](http://docs.amazonwebservices.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/ec2/model/Instance.html).  This means you can use dot-separated fieldnames to traverse the object graph.  E.g. "state.name" to specify the "name" field of the State property of the Instance.
+    # The value for the tags selector will be treated as a comma-separated list of strings
+    tags.selector=<field selector>
+    # Define a single tag <name> which will be set if and only if the selector result is not empty
+    tag.<name>.selector=<field selector>
+    # Define a single tag <name> which will be set if the selector result equals the <value>
+    tag.<name>.selector=<field selector>=<value>
 
+When defining field selector for the `tags` node property, the string value selected (if any) will
+be treated as a comma-separated list of strings to use as node tags.  You could, for example, set a custom EC2 Tag on
+an instance to contain this list of tags, in this example from the simplemapping.properties file:
+
+    tags.selector=tags/Rundeck-Tags
+
+So creating the "Rundeck-Tags" Tag on the EC2 Instance with a value of "alpha, beta" will result in the node having
+those two node tags.
+
+You can also use the <field selector>=<value> feature to set a tag only if the field selector has a certain value.
