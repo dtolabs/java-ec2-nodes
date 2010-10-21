@@ -26,7 +26,7 @@
         <echo>Build complete</echo>
     </target>
 
-    <target name="jar" depends="compile,gen-jar-classpath">
+    <target name="jar" depends="compile,gen-jar-classpath,copy-resources">
         <mkdir dir="${target.dir}/dist"/>
         <jar basedir="${target.dir}/classes" destfile="${target.dir}/dist/${proj.name}-${proj.vers}.jar">
             <manifest>
@@ -67,6 +67,12 @@
         <manifestclasspath property="jar.classpath" jarfile="${target.dir}/dist/${proj.name}-${proj.vers}.jar">
             <classpath refid="classpath" />
         </manifestclasspath>
+    </target>
+    <target name="copy-resources">
+        <!-- copy resources content to target/classes -->
+        <copy todir="${target.dir}/classes">
+            <fileset dir="${basedir}/src/main/resources" includes="**/*" excludes="**/*.java"/>
+        </copy>
     </target>
 
     <target name="clean">
