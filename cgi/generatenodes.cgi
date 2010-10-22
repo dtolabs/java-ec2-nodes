@@ -3,7 +3,7 @@
 # simple CGI script produces nodes.xml by exec'ing the ec2-rundeck-node-generator jar
 ####
 
-my $basedir="ec2-rundeck-node-generator";
+my $basedir="java-ec2-nodes";
 
 ###
 # location of AWS credentials
@@ -13,7 +13,7 @@ my $awscreds="$basedir/AwsCredentials.properties";
 ###
 # location of ec2-rundeck-node-generator.jar
 ###
-my $genjar="$basedir/target/dist/ec2-rundeck-node-generator-0.1.jar";
+my $genjar="$basedir/ec2-rundeck-node-generator-0.1.jar";
 
 ###
 # location of mapping properties (optional)

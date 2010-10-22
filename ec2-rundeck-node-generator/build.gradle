@@ -7,7 +7,7 @@ buildDir="target"
 libsDirName="dist"
 repositories {
     mavenCentral()
-    flatDir name: 'localRepository', dirs: 'lib'
+    flatDir name: 'localRepository', dirs: "$projectDir/lib"
     
     add(new org.apache.ivy.plugins.resolver.FileSystemResolver()) {
         name = 'thirdparty'

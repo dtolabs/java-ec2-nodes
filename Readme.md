@@ -8,24 +8,20 @@ The `cgi` directory contains a simple CGI script to execute the node generator a
 Build
 ----
 
-Using Ant:
-
-    $ cd ec2-rundeck-node-generator
-    $ ant
-
 Using included Gradle wrapper:
 
-    $ cd ec2-rundeck-node-generator
     $ ./gradlew
     
-Produces: target/dist/ec2-rundeck-node-generator-0.1.jar
+Produces: target/java-ec2-nodes-0.1-bin.zip
 
-See the ec2-rundeck-node-generator/Readme.md file for information on usage.
+Unzip this file, e.g at $RDECK_BASE/java-ec2-nodes, and use the enclosed cgi file.
+
+See the ec2-rundeck-node-generator/Readme.md file for information on usage of the jar file.
 
 Using the CGI
 ----------
 
-Copy the scripts/generatenodes.cgi script to your web server, make sure Apache is configured to execute .cgi files and that the file is executable.
+Copy the generatenodes.cgi script to your web server, make sure Apache is configured to execute .cgi files and that the file is executable.
 
 Modify the "$awscreds" variable to be the path to a credentials properties file.  This file should contain:
 
