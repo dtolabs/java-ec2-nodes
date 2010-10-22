@@ -27,10 +27,7 @@ package com.dtolabs.rundeck.ec2;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.ec2.AmazonEC2Client;
-import com.amazonaws.services.ec2.model.DescribeInstancesResult;
-import com.amazonaws.services.ec2.model.Instance;
-import com.amazonaws.services.ec2.model.Reservation;
-import com.amazonaws.services.ec2.model.Tag;
+import com.amazonaws.services.ec2.model.*;
 import com.dtolabs.rundeck.core.common.INodeEntry;
 import com.dtolabs.rundeck.core.common.NodeEntryImpl;
 import com.dtolabs.shared.resources.ResourceXMLConstants;
@@ -78,15 +75,7 @@ public class NodeGenerator {
         }
 
 
-        AmazonEC2Client ec2 = new AmazonEC2Client(credentials);
-
-        DescribeInstancesResult describeInstancesRequest = ec2.describeInstances();
-        List<Reservation> reservations = describeInstancesRequest.getReservations();
-        Set<Instance> instances = new HashSet<Instance>();
-
-        for (final Reservation reservation : reservations) {
-            instances.addAll(reservation.getInstances());
-        }
+        Set<Instance> instances = performQuery(credentials);
 
         for (final Instance inst : instances) {
             final INodeEntry iNodeEntry = instanceToNode(inst, mapping);
@@ -99,6 +88,23 @@ public class NodeGenerator {
         if (null != outfile) {
             System.out.println("XML Stored: " + outfile.getAbsolutePath());
         }
+    }
+
+    private static Set<Instance> performQuery(AWSCredentials credentials) {
+        AmazonEC2Client ec2 = new AmazonEC2Client(credentials);
+
+        //create "running" filter
+        Filter filter = new Filter("instance-state-name").withValues(InstanceStateName.Running.toString());
+        DescribeInstancesRequest request = new DescribeInstancesRequest().withFilters(filter);
+
+        DescribeInstancesResult describeInstancesRequest = ec2.describeInstances(request);
+        List<Reservation> reservations = describeInstancesRequest.getReservations();
+        Set<Instance> instances = new HashSet<Instance>();
+
+        for (final Reservation reservation : reservations) {
+            instances.addAll(reservation.getInstances());
+        }
+        return instances;
     }
 
     public static INodeEntry instanceToNode(final Instance inst, final Properties mapping) throws GeneratorException {
