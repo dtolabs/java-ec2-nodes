@@ -50,7 +50,10 @@ public class NodeGenerator {
 
         //load generator mapping
         if (args.length < 1) {
-            System.err.println("usage: <credentials.properties> [mapping.properties] [outfile]");
+            System.err.println(
+                "usage: <credentials.properties> [mapping.properties] [outfile] [query parameters, \"a=b\" ...]");
+            System.err.println(
+                "\t optional arguments can be replaced by \"-\" to use the default, and then query parameters appended");
             System.exit(2);
         }
 
@@ -73,9 +76,15 @@ public class NodeGenerator {
             //use stdout
             gen = new ResourceXMLGenerator(System.out);
         }
+        ArrayList<String> params=new ArrayList<String>();
+        if(args.length>3){
+            for (int i=3;i<args.length;i++) {
+                params.add(args[i]);
+            }
+        }
 
 
-        Set<Instance> instances = performQuery(credentials);
+        Set<Instance> instances = performQuery(credentials, params);
 
         for (final Instance inst : instances) {
             final INodeEntry iNodeEntry = instanceToNode(inst, mapping);
@@ -90,12 +99,23 @@ public class NodeGenerator {
         }
     }
 
-    private static Set<Instance> performQuery(AWSCredentials credentials) {
+    private static Set<Instance> performQuery(AWSCredentials credentials, final ArrayList<String> filterParams) {
         AmazonEC2Client ec2 = new AmazonEC2Client(credentials);
 
         //create "running" filter
+        ArrayList<Filter> filters = new ArrayList<Filter>();
         Filter filter = new Filter("instance-state-name").withValues(InstanceStateName.Running.toString());
-        DescribeInstancesRequest request = new DescribeInstancesRequest().withFilters(filter);
+        filters.add(filter);
+
+        if(null!=filterParams){
+            for (final String filterParam : filterParams) {
+                String[] x=filterParam.split("=",2);
+                if(!"".equals(x[0]) && !"".equals(x[1])) {
+                    filters.add(new Filter(x[0]).withValues(x[1]));
+                }
+            }
+        }
+        DescribeInstancesRequest request = new DescribeInstancesRequest().withFilters(filters);
 
         DescribeInstancesResult describeInstancesRequest = ec2.describeInstances(request);
         List<Reservation> reservations = describeInstancesRequest.getReservations();
