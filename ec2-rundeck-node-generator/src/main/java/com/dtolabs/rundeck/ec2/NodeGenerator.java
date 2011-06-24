@@ -140,7 +140,6 @@ public class NodeGenerator {
             name=host;
         }
         NodeEntryImpl node = new NodeEntryImpl(host, name);
-        node.setType("Node");
         String descSel = mapping.getProperty("description.selector");
         String desc = applySelector(inst, descSel, mapping.getProperty("description.default"));
         node.setDescription(desc);
@@ -176,25 +175,25 @@ public class NodeGenerator {
             Matcher m = settingPat.matcher(key);
             if (m.matches()) {
                 String setName = m.group(1);
-                if (null == node.getSettings()) {
-                    node.setSettings(new HashMap<String, String>());
+                if (null == node.getAttributes()) {
+                    node.setAttributes(new HashMap<String, String>());
                 }
                 final String value = applySelector(inst, selector, mapping.getProperty(
                     "setting." + setName + ".default"));
                 if (null != value) {
                     //use nodename-settingname to make the setting unique to the node
-                    node.getSettings().put(name + "-" + setName, value);
+                    node.getAttributes().put(setName, value);
                 }
             }
         }
         //evaluate single settings.selector=tags/* mapping
-        if ("tags/*".equals(mapping.getProperty("settings.selector"))) {
+        if ("tags/*".equals(mapping.getProperty("attributes.selector"))) {
             //iterate through instance tags and generate settings
             for (final Tag tag : inst.getTags()) {
-                if (null == node.getSettings()) {
-                    node.setSettings(new HashMap<String, String>());
+                if (null == node.getAttributes()) {
+                    node.setAttributes(new HashMap<String, String>());
                 }
-                node.getSettings().put(name + "-" + tag.getKey(), tag.getValue());
+                node.getAttributes().put(tag.getKey(), tag.getValue());
             }
         }
         if(null!=mapping.getProperty("tags.selector")){
@@ -225,8 +224,8 @@ public class NodeGenerator {
             Matcher m = tagPat.matcher(key);
             if (m.matches()) {
                 String tagName = m.group(1);
-                if (null == node.getSettings()) {
-                    node.setSettings(new HashMap<String, String>());
+                if (null == node.getAttributes()) {
+                    node.setAttributes(new HashMap<String, String>());
                 }
                 final String value = applySelector(inst, selparts[0], null);
                 if (null != value) {
