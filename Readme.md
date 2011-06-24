@@ -12,7 +12,7 @@ Using included Gradle wrapper:
 
     $ ./gradlew
     
-Produces: target/java-ec2-nodes-0.1-bin.zip
+Produces: target/java-ec2-nodes-0.2-bin.zip
 
 Unzip this file, e.g at $RDECK_BASE/java-ec2-nodes, and use the enclosed cgi file.
 
@@ -41,57 +41,17 @@ Finally, try to view the generatenodes.cgi through your webserver.  For example,
 Output:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE project PUBLIC "-//DTO Labs Inc.//DTD Resources Document 1.0//EN" "project.dtd">
 
     <project>
-      <node name="Example4" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-205.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="">
-        <resources>
-          <resource name="Example4-privateIpAddress" type="Setting"/>
-          <resource name="Example4-Name" type="Setting"/>
-          <resource name="Example4-privateDnsName" type="Setting"/>
-        </resources>
-      </node>
-      <node name="Example1" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-73.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="">
-        <resources>
-          <resource name="Example1-privateIpAddress" type="Setting"/>
-          <resource name="Example1-Name" type="Setting"/>
-          <resource name="Example1-privateDnsName" type="Setting"/>
-        </resources>
-      </node>
-      <node name="Example5" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-206.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="">
-        <resources>
-          <resource name="Example5-privateIpAddress" type="Setting"/>
-          <resource name="Example5-Name" type="Setting"/>
-          <resource name="Example5-privateDnsName" type="Setting"/>
-        </resources>
-      </node>
-      <node name="Example3" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-190.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="">
-        <resources>
-          <resource name="Example3-privateIpAddress" type="Setting"/>
-          <resource name="Example3-privateDnsName" type="Setting"/>
-          <resource name="Example3-Name" type="Setting"/>
-        </resources>
-      </node>
-      <node name="Example2" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-178.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="">
-        <resources>
-          <resource name="Example2-privateIpAddress" type="Setting"/>
-          <resource name="Example2-privateDnsName" type="Setting"/>
-          <resource name="Example2-Name" type="Setting"/>
-        </resources>
-      </node>
-      <setting name="Example4-privateIpAddress" type="Setting" description="" settingType="" settingValue="127.0.29.73"/>
-      <setting name="Example4-Name" type="Setting" description="" settingType="" settingValue="Example4"/>
-      <setting name="Example4-privateDnsName" type="Setting" description="" settingType="" settingValue="ip-127-0-29-73.ec2.internal"/>
-      <setting name="Example1-privateIpAddress" type="Setting" description="" settingType="" settingValue="127.1.54.85"/>
-      <setting name="Example1-Name" type="Setting" description="" settingType="" settingValue="Example1"/>
-      <setting name="Example1-privateDnsName" type="Setting" description="" settingType="" settingValue="ip-127-1-54-85.ec2.internal"/>
-      <setting name="Example5-privateIpAddress" type="Setting" description="" settingType="" settingValue="127.0.29.44"/>
-      <setting name="Example5-Name" type="Setting" description="" settingType="" settingValue="Example5"/>
-      <setting name="Example5-privateDnsName" type="Setting" description="" settingType="" settingValue="ip-127-0-29-44.ec2.internal"/>
-      <setting name="Example3-privateIpAddress" type="Setting" description="" settingType="" settingValue="127.0.11.34"/>
-      <setting name="Example3-privateDnsName" type="Setting" description="" settingType="" settingValue="ip-127-0-11-34.ec2.internal"/>
-      <setting name="Example3-Name" type="Setting" description="" settingType="" settingValue="Example3"/>
-      <setting name="Example2-privateIpAddress" type="Setting" description="" settingType="" settingValue="127.2.5.19"/>
-      <setting name="Example2-privateDnsName" type="Setting" description="" settingType="" settingValue="ip-127-2-5-19.ec2.internal"/>
-      <setting name="Example2-Name" type="Setting" description="" settingType="" settingValue="Example2"/>
+      <node name="Example4" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-205.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="" privateIpAddress="127.0.29.73" privateDnsName="ip-127-0-29-73.ec2.internal"/>
+      <node name="Example1" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-73.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="" privateIpAddress="127.1.54.85" privateDnsName="ip-127-1-54-85.ec2.internal"/>
+      <node name="Example5" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-206.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="" privateIpAddress="127.0.29.44" privateDnsName="ip-127-0-29-44.ec2.internal"/>
+      <node name="Example3" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-190.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="" privateIpAddress="127.0.11.34" privateDnsName="ip-127-0-11-34.ec2.internal"/>
+      <node name="Example2" type="Node" description="Ec2 node instance" hostname="ec2-127-0-0-178.compute-1.amazonaws.com" osArch="x86_64" osFamily="unix" osName="Linux" osVersion="" username="rundeck-user" editUrl="" remoteUrl="" privateIpAddress="127.2.5.19" privateDnsName="ip-127-2-5-19.ec2.internal"/>
     </project>
+
+Release Notes
+-----
+
+* 0.2 - Updated to support Rundeck 1.2+ resources format
+* 0.1 - initial release

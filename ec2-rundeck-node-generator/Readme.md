@@ -49,7 +49,7 @@ Rundeck nodes have the following metadata fields:
 * `editUrl` - URL to edit the definition of this node object
 * `remoteUrl` - URL to edit the definition of this node object using Rundeck-specific integration
 
-In addition, Nodes can have "Setting" values.  A Setting is a named entity with a string value.  Since Settings can be shared between Nodes, specific Settings must be named uniquely for each Node.  When defined, the name for each Setting will be made unique by prepending the name of the associated Node.
+In addition, Nodes can have arbitrary attribute values.
 
 EC2 Instance Field Selectors
 -----------------
@@ -111,12 +111,12 @@ format:
     <property>.selector=<field selector>
     # define a default value for "property":
     <property>.default=<default value>
-    # define a Setting with a selector
-    setting.<name>.selector=<field selector>
-    # define a Setting default value
-    setting.<name>.default=<default value>
-    # Special settings selector to map all Tags to Settings
-    settings.selector=tags/*
+    # define an attribute with a selector
+    attribute.<name>.selector=<field selector>
+    # define an attribute default value
+    attribute.<name>.default=<default value>
+    # Special attributes selector to map all Tags to attributes
+    attributes.selector=tags/*
     # The value for the tags selector will be treated as a comma-separated list of strings
     tags.selector=<field selector>
     # Define a single tag <name> which will be set if and only if the selector result is not empty
