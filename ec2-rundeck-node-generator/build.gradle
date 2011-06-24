@@ -26,7 +26,7 @@ dependencies {
     compile group: 'stax-api', name: 'stax-api', version: '1.0.1'
     compile group: 'aws-java-sdk', name: 'aws-java-sdk', version: '1.0.12'
     
-    compile group: 'rundeck-core', name: 'rundeck-core', version: '1.0.0'
+    compile group: 'rundeck-core', name: 'rundeck-core', version: '1.3.0'
 }
 
 jar {
