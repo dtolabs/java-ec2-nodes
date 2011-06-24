@@ -6,3 +6,5 @@ target
 */*.iws
 build
 
+
+AwsCredentials.properties
