@@ -187,6 +187,16 @@ public class NodeGenerator {
             }
         }
         //evaluate single settings.selector=tags/* mapping
+        if ("tags/*".equals(mapping.getProperty("settings.selector"))) {
+            //iterate through instance tags and generate settings
+            for (final Tag tag : inst.getTags()) {
+                if (null == node.getAttributes()) {
+                    node.setAttributes(new HashMap<String, String>());
+                }
+                node.getAttributes().put(tag.getKey(), tag.getValue());
+            }
+        }
+        //evaluate single settings.selector=tags/* mapping
         if ("tags/*".equals(mapping.getProperty("attributes.selector"))) {
             //iterate through instance tags and generate settings
             for (final Tag tag : inst.getTags()) {
