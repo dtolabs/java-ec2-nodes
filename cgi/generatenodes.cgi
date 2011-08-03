@@ -14,7 +14,7 @@ my $awscreds="$basedir/AwsCredentials.properties";
 ###
 # location of ec2-rundeck-node-generator.jar
 ###
-my $genjar="$basedir/ec2-rundeck-node-generator-0.1.jar";
+my $genjar="$basedir/ec2-rundeck-node-generator-0.2.jar";
 
 ###
 # location of mapping properties (optional)
