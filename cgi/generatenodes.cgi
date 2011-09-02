@@ -7,6 +7,11 @@ use CGI qw/:cgi :cgi-lib/;
 my $basedir="java-ec2-nodes";
 
 ###
+# Set to specific AWS Region endpoint, or leave - for default
+##
+my $endpoint="-";
+
+###
 # location of AWS credentials
 ###
 my $awscreds="$basedir/AwsCredentials.properties";
@@ -46,7 +51,7 @@ if($allowqparams){
 print header(-type=>'text/xml');
 #print "Content-Type: text/xml\n\n";
 
-exec 'java' ,"-jar", $genjar, $awscreds, $genprops,"-",@params;
+exec 'java' ,"-jar", $genjar, $awscreds, $endpoint, $genprops,"-",@params;
 
 
 

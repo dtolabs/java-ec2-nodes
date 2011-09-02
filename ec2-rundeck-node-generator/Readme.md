@@ -18,12 +18,17 @@ You can then execute the jar in-place as shown below, or you can relocate the en
 Usage
 --------
 
-    java -jar ec2-rundeck-node-generator.jar <mapping.properties> <awscredentials.properties> [output.xml]
+    java -jar ec2-rundeck-node-generator.jar <mapping.properties> <endpoint> <awscredentials.properties> [output.xml]
 
 By default it produces the XML output on STDOUT.  if `output.xml` file is specified, the
 XML content will be stored in the given file.
 
 `mapping.properties` is a properties file specifying how to map EC2 Instance metadata to the Node metadata used by Rundeck.  (See below).
+
+`endpoint` specifies the AWS Region Endpoint, allowing different regions to be used. If you
+use a blank string or "-" then the default will be used (which is "https://ec2.amazonaws.com" and uses the us-east-1 endpoint).
+
+(See [Regions and Endpoints](http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html) in the AWS docs.)
 
 `awscredentials.properties` specifies the Access Key and Secret Key for API access to AWS.
 

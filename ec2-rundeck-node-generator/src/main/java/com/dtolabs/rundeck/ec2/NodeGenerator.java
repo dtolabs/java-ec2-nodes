@@ -49,42 +49,43 @@ public class NodeGenerator {
         File outfile = null;
 
         //load generator mapping
-        if (args.length < 1) {
+        if (args.length < 2) {
             System.err.println(
-                "usage: <credentials.properties> [mapping.properties] [outfile] [query parameters, \"a=b\" ...]");
+                "usage: <credentials.properties> <endpoint> [mapping.properties] [outfile] [query parameters, \"a=b\" ...]");
             System.err.println(
                 "\t optional arguments can be replaced by \"-\" to use the default, and then query parameters appended");
             System.exit(2);
         }
 
         final InputStream stream = new FileInputStream(args[0]);
+        final String endPoint = args[1];
         final AWSCredentials credentials = new PropertiesCredentials(stream);
 
         Properties mapping = new Properties();
-        if (args.length > 1 && !"-".equals(args[1])) {
-            mapping.load(new FileInputStream(args[1]));
+        if (args.length > 2 && !"-".equals(args[2])) {
+            mapping.load(new FileInputStream(args[2]));
         } else {
             mapping.load(NodeGenerator.class.getClassLoader().getResourceAsStream("simplemapping.properties"));
         }
 
 
         final ResourceXMLGenerator gen;
-        if (args.length > 2 && !"-".equals(args[2])) {
-            outfile = new File(args[2]);
+        if (args.length > 3 && !"-".equals(args[3])) {
+            outfile = new File(args[3]);
             gen = new ResourceXMLGenerator(outfile);
         } else {
             //use stdout
             gen = new ResourceXMLGenerator(System.out);
         }
         ArrayList<String> params=new ArrayList<String>();
-        if(args.length>3){
-            for (int i=3;i<args.length;i++) {
+        if(args.length>4){
+            for (int i=4;i<args.length;i++) {
                 params.add(args[i]);
             }
         }
 
 
-        Set<Instance> instances = performQuery(credentials, params);
+        Set<Instance> instances = performQuery(credentials, endPoint, params);
 
         for (final Instance inst : instances) {
             final INodeEntry iNodeEntry = instanceToNode(inst, mapping);
@@ -99,8 +100,11 @@ public class NodeGenerator {
         }
     }
 
-    private static Set<Instance> performQuery(AWSCredentials credentials, final ArrayList<String> filterParams) {
+    private static Set<Instance> performQuery(AWSCredentials credentials, final String endPoint, final ArrayList<String> filterParams) {
         AmazonEC2Client ec2 = new AmazonEC2Client(credentials);
+        if(null!=endPoint && !"".equals(endPoint) && !"-".equals(endPoint)){
+            ec2.setEndpoint(endPoint);
+        }
 
         //create "running" filter
         ArrayList<Filter> filters = new ArrayList<Filter>();
