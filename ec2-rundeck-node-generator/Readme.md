@@ -138,4 +138,6 @@ an instance to contain this list of tags, in this example from the simplemapping
 So creating the "Rundeck-Tags" Tag on the EC2 Instance with a value of "alpha, beta" will result in the node having
 those two node tags.
 
+**NOTE:** Due to a bug in rundeck-core library, "tags.selector" doesn't always work.  You can use "attribute.tags.selector" instead.
+
 You can also use the <field selector>=<value> feature to set a tag only if the field selector has a certain value.
