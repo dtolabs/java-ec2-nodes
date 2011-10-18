@@ -1,3 +1,19 @@
+Deprecation Notice
+============
+
+**NOTICE:** This ec2 nodes provider is for RunDeck 1.3 and earlier.  It is now deprecated in favor of the plugin mechanism (to be) introduced in 
+RunDeck 1.4.  
+
+A new Github project provides a plugin offering the ec2 node functionality for RunDeck 1.4:
+
+* https://github.com/gschueler/rundeck-ec2-nodes-plugin
+
+Please use the new plugin for RunDeck 1.4+ and file any issues under the Github Issues for that project.
+
+Thank you,
+
+ - Greg Schueler, 10/18/2011
+
 EC2 integration to generate rundeck resources.xml file
 ============
 
